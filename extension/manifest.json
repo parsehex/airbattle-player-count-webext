@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
   "name": "Airbattle Player Count",
+  "author": "parsehex",
   "version": "0.0.1",
-  "description": "[description]",
+  "description": "Extension to show the current player count on Airbattle",
   "action": {
     "default_popup": "./dist/popup/index.html"
   },
@@ -13,39 +14,11 @@
   "background": {
     "service_worker": "./dist/background/index.mjs"
   },
-  "permissions": [
-    "tabs",
-    "storage",
-    "activeTab",
-    "sidePanel"
-  ],
+  "permissions": [],
   "host_permissions": [
     "https://airbattle-ws.clickagain.xyz/*"
   ],
-  "content_scripts": [
-    {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
-        "dist/contentScripts/index.global.js"
-      ]
-    }
-  ],
-  "web_accessible_resources": [
-    {
-      "resources": [
-        "dist/contentScripts/style.css"
-      ],
-      "matches": [
-        "<all_urls>"
-      ]
-    }
-  ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self' http://localhost:3303; object-src 'self'"
-  },
-  "side_panel": {
-    "default_path": "dist/sidepanel/index.html"
+    "extension_pages": "script-src 'self'; object-src 'self'"
   }
 }

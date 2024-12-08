@@ -11,6 +11,7 @@ export async function getManifest() {
   const manifest: Manifest.WebExtensionManifest = {
     manifest_version: 3,
     name: pkg.displayName || pkg.name,
+    author: pkg.author,
     version: pkg.version,
     description: pkg.description,
     action: {
