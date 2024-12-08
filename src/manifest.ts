@@ -30,48 +30,47 @@ export async function getManifest() {
           service_worker: './dist/background/index.mjs',
         },
     permissions: [
-      'tabs',
-      'storage',
-      'activeTab',
-      'sidePanel',
+      // 'tabs',
+      // 'storage',
+      // 'activeTab',
     ],
     host_permissions: ['https://airbattle-ws.clickagain.xyz/*'],
-    content_scripts: [
-      {
-        matches: [
-          '<all_urls>',
-        ],
-        js: [
-          'dist/contentScripts/index.global.js',
-        ],
-      },
-    ],
-    web_accessible_resources: [
-      {
-        resources: ['dist/contentScripts/style.css'],
-        matches: ['<all_urls>'],
-      },
-    ],
+    // content_scripts: [
+    //   {
+    //     matches: [
+    //       '<all_urls>',
+    //     ],
+    //     js: [
+    //       'dist/contentScripts/index.global.js',
+    //     ],
+    //   },
+    // ],
+    // web_accessible_resources: [
+    //   {
+    //     resources: ['dist/contentScripts/style.css'],
+    //     matches: ['<all_urls>'],
+    //   },
+    // ],
     content_security_policy: {
       extension_pages: isDev
         // this is required on dev for Vite script to load
-        ? `script-src \'self\' http://localhost:${port}; object-src \'self\'`
+        ? `script-src \'self\' localhost:${port}; object-src \'self\'`
         : 'script-src \'self\'; object-src \'self\'',
     },
   }
 
   // add sidepanel
-  if (isFirefox) {
-    manifest.sidebar_action = {
-      default_panel: 'dist/sidepanel/index.html',
-    }
-  }
-  else {
-    // the sidebar_action does not work for chromium based
-    (manifest as any).side_panel = {
-      default_path: 'dist/sidepanel/index.html',
-    }
-  }
+  // if (isFirefox) {
+  //   manifest.sidebar_action = {
+  //     default_panel: 'dist/sidepanel/index.html',
+  //   }
+  // }
+  // else {
+  //   // the sidebar_action does not work for chromium based
+  //   (manifest as any).side_panel = {
+  //     default_path: 'dist/sidepanel/index.html',
+  //   }
+  // }
 
   // FIXME: not work in MV3
   if (isDev && false) {
