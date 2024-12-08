@@ -64,23 +64,27 @@ browser.runtime.onInstalled.addListener((): void => {
 //   }
 // })
 
-// Function to fetch data and update the badge
+const green = '#11DD11'
+const orange = '#FFA500'
+const red = '#FF0000'
 async function updateBadge() {
   try {
     const response = await fetch('https://airbattle-ws.clickagain.xyz/')
     const data = await response.json()
-    const badgeText = data.players.toString() // Adjust based on your response structure
+    let players = data.players
+    const bots = data.bots
+    players = players - bots
 
-    await browser.action.setBadgeText({ text: badgeText })
-    await browser.action.setBadgeBackgroundColor({ color: '#11DD11' })
+    await browser.action.setBadgeText({ text: players.toString() })
+    await browser.action.setBadgeBackgroundColor({ color: players > 0 ? green : orange })
   }
   catch (error) {
+    await browser.action.setBadgeText({ text: '--' })
+    await browser.action.setBadgeBackgroundColor({ color: red })
     throw new Error(`Failed to fetch data: ${error}`)
   }
 }
 
-// Call the function periodically
-setInterval(updateBadge, 60000) // Update every 60 seconds
+setInterval(updateBadge, 60000)
 
-// Initial call to set the badge when the extension is loaded
 updateBadge()
