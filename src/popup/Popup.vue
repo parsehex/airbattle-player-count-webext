@@ -1,22 +1,40 @@
 <script setup lang="ts">
-import { storageDemo } from '~/logic/storage'
+import { sendMessage } from 'webext-bridge/popup'
 
-function openOptionsPage() {
-  browser.runtime.openOptionsPage()
-}
+const playersList = ref<{ id: number, name: string }[]>([])
+
+onMounted(async () => {
+  const lastData = await browser.storage.local.get('lastData')
+  playersList.value = (lastData as any).lastData?.playersList ?? []
+})
+
+browser.storage.onChanged.addListener((changes) => {
+  for (const [key, { newValue }] of Object.entries(changes)) {
+    if (key === 'lastData') {
+      playersList.value = (newValue as any).playersList
+    }
+  }
+})
 </script>
 
 <template>
   <main class="w-[300px] px-4 py-5 text-center text-gray-700">
-    <Logo />
-    <div>Popup</div>
-    <SharedSubtitle />
-
-    <button class="btn mt-2" @click="openOptionsPage">
-      Open Options
+    <h1 class="text-2xl font-bold mb-4">
+      Airbattle Players List
+    </h1>
+    <ul>
+      <li v-for="player in playersList" :key="player.id">
+        {{ player.name }}
+      </li>
+    </ul>
+    <p v-if="playersList.length === 0">
+      No players found ☹️
+    </p>
+    <button
+      class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      @click="sendMessage('update-data', null)"
+    >
+      Refresh
     </button>
-    <div class="mt-2">
-      <span class="opacity-50">Storage:</span> {{ storageDemo }}
-    </div>
   </main>
 </template>

@@ -31,7 +31,7 @@ export async function getManifest() {
         },
     permissions: [
       // 'tabs',
-      // 'storage',
+      'storage',
       // 'activeTab',
     ],
     host_permissions: ['https://airbattle-ws.clickagain.xyz/*'],
@@ -54,7 +54,7 @@ export async function getManifest() {
     content_security_policy: {
       extension_pages: isDev
         // this is required on dev for Vite script to load
-        ? `script-src \'self\' localhost:${port}; object-src \'self\'`
+        ? `script-src \'self\' http://localhost:${port}; object-src \'self\'`
         : 'script-src \'self\'; object-src \'self\'',
     },
   }

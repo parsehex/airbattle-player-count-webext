@@ -1,5 +1,5 @@
-import { onMessage, sendMessage } from 'webext-bridge/background'
-import type { Tabs } from 'webextension-polyfill'
+import { onMessage } from 'webext-bridge/background'
+// import type { Tabs } from 'webextension-polyfill'
 
 // only on dev mode
 if (import.meta.hot) {
@@ -64,19 +64,27 @@ browser.runtime.onInstalled.addListener((): void => {
 //   }
 // })
 
+const liveEndpoint = 'https://airbattle-ws.clickagain.xyz/'
+// const devEndpoint = 'http://127.0.0.1:3501/'
+
 const green = '#11DD11'
 const orange = '#FFA500'
 const red = '#FF0000'
 async function updateBadge() {
   try {
-    const response = await fetch('https://airbattle-ws.clickagain.xyz/')
+    const response = await fetch(liveEndpoint)
     const data = await response.json()
     let players = data.players
     const bots = data.bots
     players = players - bots
 
+    // store response in storage (as `lastData`)
+    await browser.storage.local.set({ lastData: data })
+
     await browser.action.setBadgeText({ text: players.toString() })
-    await browser.action.setBadgeBackgroundColor({ color: players > 0 ? green : orange })
+    await browser.action.setBadgeBackgroundColor({
+      color: players > 0 ? green : orange,
+    })
   }
   catch (error) {
     await browser.action.setBadgeText({ text: '--' })
@@ -88,3 +96,6 @@ async function updateBadge() {
 setInterval(updateBadge, 60000)
 
 updateBadge()
+onMessage('update-data', () => {
+  updateBadge()
+})
