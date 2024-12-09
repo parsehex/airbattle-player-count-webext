@@ -33,6 +33,7 @@ export async function getManifest() {
       // 'tabs',
       'storage',
       // 'activeTab',
+      'alarms',
     ],
     host_permissions: ['https://airbattle-ws.clickagain.xyz/*'],
     // content_scripts: [

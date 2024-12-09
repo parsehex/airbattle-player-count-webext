@@ -50,20 +50,6 @@ browser.runtime.onInstalled.addListener((): void => {
 //   sendMessage('tab-prev', { title: tab.title }, { context: 'content-script', tabId })
 // })
 
-// onMessage('get-current-tab', async () => {
-//   try {
-//     const tab = await browser.tabs.get(previousTabId)
-//     return {
-//       title: tab?.title,
-//     }
-//   }
-//   catch {
-//     return {
-//       title: undefined,
-//     }
-//   }
-// })
-
 const liveEndpoint = 'https://airbattle-ws.clickagain.xyz/'
 // const devEndpoint = 'http://127.0.0.1:3501/'
 
@@ -93,9 +79,26 @@ async function updateBadge() {
   }
 }
 
-setInterval(updateBadge, 60000)
+// Set up alarm for periodic updates (every 1 minute)
+browser.alarms.create('updateBadge', {
+  periodInMinutes: 1,
+})
 
+// Listen for alarm
+browser.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === 'updateBadge')
+    updateBadge()
+})
+
+// Initial update
 updateBadge()
+
+// Handle manual update requests
 onMessage('update-data', () => {
   updateBadge()
+})
+
+// Optional: Clean up on extension uninstall/disable
+browser.runtime.onSuspend.addListener(() => {
+  browser.alarms.clear('updateBadge')
 })
